@@ -14,6 +14,7 @@
       --bg-secondary: #111111;
       --text-dim: #aaaaaa;
       --warning: #ffaa00;
+      --success: #00ff00;
     }
 
     [data-theme="light"] {
@@ -25,6 +26,7 @@
       --bg-secondary: #eeeeee;
       --text-dim: #666666;
       --warning: #cc8800;
+      --success: #008800;
     }
 
     * {
@@ -79,7 +81,7 @@
       }
     }
 
-    /* Header - более "гаражный" */
+    /* Header - адаптивное меню */
     .header {
       position: fixed;
       top: 0;
@@ -91,9 +93,16 @@
       z-index: 1000;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       padding: 0 2rem;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo-small {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--accent);
+      letter-spacing: 2px;
     }
 
     .nav-menu {
@@ -129,6 +138,22 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
+    /* Mobile menu toggle */
+    .menu-toggle {
+      display: none;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .menu-toggle:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
     /* Main content */
     .main-content {
       margin-top: 60px;
@@ -158,40 +183,59 @@
       }
     }
 
-    /* Home page - более "гаражный" стиль */
-    .hero-section {
+    /* ASCII Logo Section */
+    .ascii-hero {
       height: calc(100vh - 140px);
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: flex-start;
-      text-align: left;
+      align-items: center;
+      text-align: center;
       position: relative;
-      max-width: 1200px;
-      margin: 0 auto;
+      padding: 2rem;
     }
 
-    .hero-title {
-      font-size: 3.5rem;
-      margin-bottom: 1rem;
-      position: relative;
-      z-index: 1;
-      font-weight: bold;
-      letter-spacing: 3px;
-    }
-
-    .hero-subtitle {
-      font-size: 1.3rem;
+    .ascii-logo {
+      font-family: 'Courier New', monospace;
+      white-space: pre;
+      color: var(--accent);
+      line-height: 1.2;
+      font-size: 1rem;
       margin-bottom: 2rem;
-      color: var(--text-dim);
-      max-width: 700px;
-      line-height: 1.5;
+      text-align: left;
+      overflow-x: auto;
+      max-width: 100%;
+    }
+
+    .status-display {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 2rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      text-align: left;
+    }
+
+    .status-line {
+      color: var(--success);
+      letter-spacing: 1px;
+    }
+
+    .days-counter {
+      color: var(--warning);
+      font-weight: bold;
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 1.1rem;
     }
 
     .hero-cta {
       display: flex;
       gap: 1rem;
       flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 2rem;
     }
 
     .btn {
@@ -231,7 +275,7 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
-    /* Grid layout для секций - более "промышленный" */
+    /* Grid layout для секций */
     .section-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -284,7 +328,7 @@
       color: var(--text-dim);
     }
 
-    /* Divisions grid - "промышленный" стиль */
+    /* Divisions grid */
     .divisions-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -396,7 +440,7 @@
       margin-bottom: 1.5rem;
     }
 
-    /* Timeline styles - более "промышленный" */
+    /* Timeline styles */
     .timeline {
       position: relative;
       margin: 2rem 0;
@@ -506,7 +550,7 @@
       color: var(--accent);
     }
 
-    /* Manifesto styles - более "гаражный" */
+    /* Manifesto styles */
     .manifesto-content {
       max-width: 900px;
       margin: 0 auto;
@@ -549,7 +593,7 @@
       line-height: 1.7;
     }
 
-    /* Footer - более "промышленный" */
+    /* Footer */
     .footer {
       background: var(--bg-secondary);
       border-top: 2px solid var(--border);
@@ -607,26 +651,72 @@
     }
 
     /* Responsive design */
+    @media (max-width: 1024px) {
+      .ascii-logo {
+        font-size: 0.8rem;
+      }
+    }
+
     @media (max-width: 768px) {
       .header {
         padding: 0 1rem;
       }
 
       .nav-menu {
-        gap: 0;
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        background: var(--bg-secondary);
+        border: 2px solid var(--border);
+        border-top: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .nav-menu.mobile-open {
+        display: flex;
       }
 
       .nav-item {
-        font-size: 0.7rem;
-        padding: 0.6rem 0.8rem;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 1rem;
+        text-align: center;
       }
 
-      .hero-title {
-        font-size: 2.5rem;
+      .nav-item:last-child {
+        border-bottom: none;
       }
 
-      .hero-subtitle {
-        font-size: 1.1rem;
+      .menu-toggle {
+        display: block;
+      }
+
+      .ascii-logo {
+        font-size: 0.6rem;
+        line-height: 1.1;
+      }
+
+      .ascii-hero {
+        padding: 1rem;
+        height: auto;
+        min-height: calc(100vh - 140px);
+      }
+
+      .status-display {
+        font-size: 0.8rem;
+      }
+
+      .hero-cta {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .btn {
+        width: 100%;
+        max-width: 300px;
       }
 
       .contact-grid {
@@ -650,9 +740,30 @@
       .page {
         padding: 1rem;
       }
+
+      .page h1 {
+        font-size: 2rem;
+      }
     }
 
-    /* Glitch effect for special elements */
+    @media (max-width: 480px) {
+      .ascii-logo {
+        font-size: 0.4rem;
+        line-height: 1;
+      }
+
+      .status-display {
+        font-size: 0.7rem;
+      }
+
+      .footer {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+    }
+
+    /* Glitch effect */
     .glitch {
       position: relative;
       display: inline-block;
@@ -699,8 +810,10 @@
 
   <!-- Header -->
   <header class="header">
+    <div class="logo-small">RAVEN</div>
+    <button class="menu-toggle" onclick="toggleMobileMenu()">☰</button>
     <nav>
-      <ul class="nav-menu">
+      <ul class="nav-menu" id="navMenu">
         <li class="nav-item active" onclick="navigate('home')">Главная</li>
         <li class="nav-item" onclick="navigate('manifesto')">Манифест</li>
         <li class="nav-item" onclick="navigate('divisions')">Отделы</li>
@@ -715,9 +828,35 @@
   <main class="main-content">
     <!-- Home Page -->
     <div id="home" class="page active">
-      <section class="hero-section">
-        <h1 class="hero-title glitch" data-text="RAVEN INDUSTRIES">RAVEN INDUSTRIES</h1>
-        <p class="hero-subtitle">Режем сквозь шум. Строим то, что важно. Создаём будущее с точностью, инновациями и бескомпромиссным качеством.</p>
+      <section class="ascii-hero">
+        <div class="ascii-logo">████████████████████████████████████████████████████████████████████████████████
+█                                                                              █
+█   ██████╗  █████╗ ██╗   ██╗███████╗███╗   ██╗                               █
+█   ██╔══██╗██╔══██╗██║   ██║██╔════╝████╗  ██║                               █
+█   ██████╔╝███████║██║   ██║█████╗  ██╔██╗ ██║                               █
+█   ██╔══██╗██╔══██║╚██╗ ██╔╝██╔══╝  ██║╚██╗██║                               █
+█   ██║  ██║██║  ██║ ╚████╔╝ ███████╗██║ ╚████║                               █
+█   ╚═╝  ╚═╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝╚═╝  ╚═══╝                               █
+█                                                                              █
+█                                                                              █
+█   [СИСТЕМА АКТИВНА]    > Инженерный максимализм включён                     █
+█                                                                              █
+█   [СТАТУС]             > Все системы в норме                                █
+█                                                                              █
+█   [МИССИЯ]             > Строим будущее                                     █
+█                                                                              █
+████████████████████████████████████████████████████████████████████████████████</div>
+        
+        <div class="status-display">
+          <div class="status-line">[ИНИЦИАЛИЗАЦИЯ ЗАВЕРШЕНА]</div>
+          <div class="status-line">[МОДУЛИ ЗАГРУЖЕНЫ]</div>
+          <div class="status-line">[ГОТОВ К ВЫПОЛНЕНИЮ МИССИИ]</div>
+        </div>
+
+        <div class="days-counter" id="daysCounter">
+          [ВРЕМЯ РАБОТЫ] > ЗАГРУЗКА...
+        </div>
+
         <div class="hero-cta">
           <button class="btn" onclick="navigate('manifesto')">Читать манифест</button>
           <button class="btn" onclick="navigate('projects')">Смотреть проекты</button>
@@ -971,8 +1110,35 @@
       event.target.classList.add('active');
       document.getElementById(page).classList.add('active');
       
+      // Close mobile menu if open
+      document.getElementById('navMenu').classList.remove('mobile-open');
+      
       // Scroll to top
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+      const navMenu = document.getElementById('navMenu');
+      navMenu.classList.toggle('mobile-open');
+    }
+
+    // Days counter calculation
+    function updateDaysCounter() {
+      const foundingDate = new Date('2025-05-25');
+      const currentDate = new Date();
+      const timeDiff = currentDate.getTime() - foundingDate.getTime();
+      const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+      
+      const counter = document.getElementById('daysCounter');
+      if (counter) {
+        if (daysDiff >= 0) {
+          counter.textContent = `[ВРЕМЯ РАБОТЫ] > ${daysDiff} ДНЕЙ В ОПЕРАЦИИ`;
+        } else {
+          const daysUntil = Math.abs(daysDiff);
+          counter.textContent = `[ЗАПУСК ЧЕРЕЗ] > ${daysUntil} ДНЕЙ ДО АКТИВАЦИИ`;
+        }
+      }
     }
 
     // Create floating particles
@@ -1010,13 +1176,29 @@
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         navigate('home');
+        // Close mobile menu
+        document.getElementById('navMenu').classList.remove('mobile-open');
       }
       
       // Quick navigation with number keys
       const pages = ['home', 'manifesto', 'divisions', 'projects', 'timeline', 'contact'];
       const keyNum = parseInt(e.key);
       if (keyNum >= 1 && keyNum <= 6) {
-        navigate(pages[keyNum - 1]);
+        // Simulate click on nav item
+        const navItems = document.querySelectorAll('.nav-item');
+        if (navItems[keyNum - 1]) {
+          navItems[keyNum - 1].click();
+        }
+      }
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(e) {
+      const navMenu = document.getElementById('navMenu');
+      const menuToggle = document.querySelector('.menu-toggle');
+      
+      if (!navMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+        navMenu.classList.remove('mobile-open');
       }
     });
 
@@ -1053,6 +1235,10 @@
     document.addEventListener('DOMContentLoaded', function() {
       loadTheme();
       createParticles();
+      updateDaysCounter();
+      
+      // Update counter every hour
+      setInterval(updateDaysCounter, 3600000);
       
       // Add fade-in animation to cards
       document.querySelectorAll('.card, .division-card, .project-card, .timeline-item').forEach(card => {
@@ -1062,11 +1248,11 @@
         observer.observe(card);
       });
 
-      // Add glitch effect to hero title on load
+      // Add glitch effect to ASCII logo on load
       setTimeout(() => {
-        const heroTitle = document.querySelector('.hero-title');
-        if (heroTitle) {
-          heroTitle.style.animation = 'glitch1 0.5s ease-in-out';
+        const asciiLogo = document.querySelector('.ascii-logo');
+        if (asciiLogo) {
+          asciiLogo.style.animation = 'glitch1 0.5s ease-in-out';
         }
       }, 1000);
     });
@@ -1139,6 +1325,18 @@
         setTimeout(() => {
           e.target.style.transform = '';
         }, 100);
+      }
+    });
+
+    // Handle window resize for ASCII logo responsiveness
+    window.addEventListener('resize', function() {
+      // Force redraw of ASCII logo on orientation change
+      const asciiLogo = document.querySelector('.ascii-logo');
+      if (asciiLogo) {
+        asciiLogo.style.display = 'none';
+        setTimeout(() => {
+          asciiLogo.style.display = 'block';
+        }, 10);
       }
     });
   </script>
