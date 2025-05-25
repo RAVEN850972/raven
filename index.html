@@ -4,40 +4,1143 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Raven Industries</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --bg: #000000;
+      --text: #ffffff;
+      --accent: #ffffff;
+      --border: #333333;
+      --hover: #ffffff;
+      --bg-secondary: #111111;
+      --text-dim: #aaaaaa;
+      --warning: #ffaa00;
+    }
+
+    [data-theme="light"] {
+      --bg: #f5f5f5;
+      --text: #1a1a1a;
+      --accent: #000000;
+      --border: #cccccc;
+      --hover: #000000;
+      --bg-secondary: #eeeeee;
+      --text-dim: #666666;
+      --warning: #cc8800;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Courier New', monospace;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      min-height: 100vh;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* Floating particles background */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      background: var(--text);
+      opacity: 0.08;
+      animation: float linear infinite;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.08;
+      }
+      90% {
+        opacity: 0.08;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Header - более "гаражный" */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: var(--bg);
+      border-bottom: 2px solid var(--border);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 2rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 0;
+      list-style: none;
+      border: 2px solid var(--border);
+      background: var(--bg-secondary);
+    }
+
+    .nav-item {
+      position: relative;
+      cursor: pointer;
+      padding: 0.8rem 1.2rem;
+      border-right: 1px solid var(--border);
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      background: var(--bg-secondary);
+    }
+
+    .nav-item:last-child {
+      border-right: none;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background: var(--accent);
+      color: var(--bg);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Main content */
+    .main-content {
+      margin-top: 60px;
+      min-height: calc(100vh - 60px);
+      position: relative;
+    }
+
+    .page {
+      display: none;
+      min-height: calc(100vh - 60px);
+      padding: 2rem;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Home page - более "гаражный" стиль */
+    .hero-section {
+      height: calc(100vh - 140px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      text-align: left;
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+      font-weight: bold;
+      letter-spacing: 3px;
+    }
+
+    .hero-subtitle {
+      font-size: 1.3rem;
+      margin-bottom: 2rem;
+      color: var(--text-dim);
+      max-width: 700px;
+      line-height: 1.5;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 1rem 2rem;
+      border: 2px solid var(--accent);
+      background: var(--bg);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-family: inherit;
+      font-weight: bold;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--accent);
+      transition: left 0.3s ease;
+      z-index: -1;
+    }
+
+    .btn:hover::before {
+      left: 0;
+    }
+
+    .btn:hover {
+      color: var(--bg);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Grid layout для секций - более "промышленный" */
+    .section-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .card {
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      padding: 2rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 0;
+      background: var(--accent);
+      transition: height 0.3s ease;
+    }
+
+    .card:hover::before {
+      height: 100%;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    .card p {
+      line-height: 1.6;
+      color: var(--text-dim);
+    }
+
+    /* Divisions grid - "промышленный" стиль */
+    .divisions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .division-card {
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .division-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .division-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .division-title {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .division-desc {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    /* Projects layout */
+    .projects-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .project-card {
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      padding: 2rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 4px;
+      background: var(--accent);
+      transition: width 0.4s ease;
+    }
+
+    .project-card:hover::after {
+      width: 100%;
+    }
+
+    .project-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .project-status {
+      display: inline-block;
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--border);
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: var(--bg);
+      font-weight: bold;
+    }
+
+    .project-title {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    .project-desc {
+      color: var(--text-dim);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Timeline styles - более "промышленный" */
+    .timeline {
+      position: relative;
+      margin: 2rem 0;
+      padding-left: 3rem;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--border);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 3rem;
+      padding: 1.5rem;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      margin-left: 1rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2.5rem;
+      top: 1.5rem;
+      width: 12px;
+      height: 12px;
+      background: var(--accent);
+      border: 3px solid var(--bg);
+      border-radius: 50%;
+    }
+
+    .timeline-date {
+      font-size: 0.9rem;
+      color: var(--warning);
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .timeline-title {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    .timeline-desc {
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    /* Contact section */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin-top: 2rem;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .contact-info {
+      border: 2px solid var(--border);
+      padding: 2rem;
+      background: var(--bg-secondary);
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+      background: var(--bg);
+    }
+
+    .contact-item:hover {
+      border-color: var(--accent);
+      transform: translateX(5px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .contact-icon {
+      font-size: 1.5rem;
+    }
+
+    .contact-link {
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.3s ease;
+      font-weight: bold;
+    }
+
+    .contact-link:hover {
+      color: var(--accent);
+    }
+
+    /* Manifesto styles - более "гаражный" */
+    .manifesto-content {
+      max-width: 900px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    .manifesto-section {
+      margin-bottom: 3rem;
+      padding: 2rem;
+      border: 2px solid var(--border);
+      background: var(--bg-secondary);
+      position: relative;
+    }
+
+    .manifesto-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 4px;
+      background: var(--accent);
+      transition: width 0.5s ease;
+    }
+
+    .manifesto-section:hover::before {
+      width: 100%;
+    }
+
+    .manifesto-title {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    .manifesto-text {
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+      line-height: 1.7;
+    }
+
+    /* Footer - более "промышленный" */
+    .footer {
+      background: var(--bg-secondary);
+      border-top: 2px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      margin-top: 3rem;
+    }
+
+    .footer-status {
+      color: var(--text-dim);
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .theme-toggle {
+      background: var(--bg);
+      border: 2px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: var(--bg);
+      transform: translateY(-2px);
+    }
+
+    /* Page titles */
+    .page h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border-bottom: 3px solid var(--border);
+      padding-bottom: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .page > p {
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      margin-bottom: 2rem;
+      line-height: 1.6;
+      max-width: 800px;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .header {
+        padding: 0 1rem;
+      }
+
+      .nav-menu {
+        gap: 0;
+      }
+
+      .nav-item {
+        font-size: 0.7rem;
+        padding: 0.6rem 0.8rem;
+      }
+
+      .hero-title {
+        font-size: 2.5rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1.1rem;
+      }
+
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-grid,
+      .divisions-grid,
+      .projects-container {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline {
+        padding-left: 2rem;
+      }
+
+      .timeline-item {
+        margin-left: 0.5rem;
+      }
+
+      .page {
+        padding: 1rem;
+      }
+    }
+
+    /* Glitch effect for special elements */
+    .glitch {
+      position: relative;
+      display: inline-block;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .glitch:hover::before {
+      animation: glitch1 0.3s ease-in-out;
+    }
+
+    .glitch:hover::after {
+      animation: glitch2 0.3s ease-in-out;
+    }
+
+    @keyframes glitch1 {
+      0%, 100% { opacity: 0; transform: translate(0); }
+      20% { opacity: 0.8; transform: translate(-1px, 1px); }
+      40% { opacity: 0.8; transform: translate(-1px, -1px); }
+      60% { opacity: 0.8; transform: translate(1px, 1px); }
+      80% { opacity: 0.8; transform: translate(1px, -1px); }
+    }
+
+    @keyframes glitch2 {
+      0%, 100% { opacity: 0; transform: translate(0); }
+      20% { opacity: 0.8; transform: translate(1px, 1px); }
+      40% { opacity: 0.8; transform: translate(1px, -1px); }
+      60% { opacity: 0.8; transform: translate(-1px, 1px); }
+      80% { opacity: 0.8; transform: translate(-1px, -1px); }
+    }
+  </style>
 </head>
-<body>
-  <div class="container">
-    <!-- Навигационная панель -->
-    <nav class="sidebar">
-      <div class="logo-container">
-        <div class="logo-circle">
-          <div class="logo-dot"></div>
-        </div>
-        <h1 class="logo-text">RAVEN INDUSTRIES</h1>
-      </div>
-      <div class="nav-links">
-        <button onclick="navigate('home')">HOME</button>
-        <button onclick="navigate('manifesto')">MANIFESTO</button>
-        <button onclick="navigate('divisions')">DIVISIONS</button>
-        <button onclick="navigate('projects')">PROJECTS</button>
-        <button onclick="navigate('contact')">CONTACT</button>
-      </div>
+<body data-theme="dark">
+  <!-- Floating particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <nav>
+      <ul class="nav-menu">
+        <li class="nav-item active" onclick="navigate('home')">Главная</li>
+        <li class="nav-item" onclick="navigate('manifesto')">Манифест</li>
+        <li class="nav-item" onclick="navigate('divisions')">Отделы</li>
+        <li class="nav-item" onclick="navigate('projects')">Проекты</li>
+        <li class="nav-item" onclick="navigate('timeline')">Планы</li>
+        <li class="nav-item" onclick="navigate('contact')">Контакты</li>
+      </ul>
     </nav>
+  </header>
 
-    <!-- Основной контент -->
-    <main id="content" class="fade-in">
-      <h2>HOME</h2>
-      <p>Загрузка данных из Raven Archives...</p>
-    </main>
-  </div>
+  <!-- Main content -->
+  <main class="main-content">
+    <!-- Home Page -->
+    <div id="home" class="page active">
+      <section class="hero-section">
+        <h1 class="hero-title glitch" data-text="RAVEN INDUSTRIES">RAVEN INDUSTRIES</h1>
+        <p class="hero-subtitle">Режем сквозь шум. Строим то, что важно. Создаём будущее с точностью, инновациями и бескомпромиссным качеством.</p>
+        <div class="hero-cta">
+          <button class="btn" onclick="navigate('manifesto')">Читать манифест</button>
+          <button class="btn" onclick="navigate('projects')">Смотреть проекты</button>
+        </div>
+      </section>
 
-  <!-- Нижний футер -->
-  <footer>
-    <span>[Access Granted] Welcome, Operative Raven</span>
-    <button id="theme-toggle">🌓</button>
+      <div class="section-grid">
+        <div class="card">
+          <h3>⚙️ Передовая инженерия</h3>
+          <p>Мы разрабатываем решения на переднем крае ИИ, биотехнологий, нейроинженерии и автономных систем. Каждый проект раздвигает границы возможного.</p>
+        </div>
+        <div class="card">
+          <h3>🧠 Лаборатория инноваций</h3>
+          <p>Наши исследовательские отделы работают над технологиями завтрашнего дня уже сегодня. От нейроинтерфейсов до квантовых вычислений — мы строим инфраструктуру будущего.</p>
+        </div>
+        <div class="card">
+          <h3>🔬 Научная строгость</h3>
+          <p>Каждое решение построено на прочных инженерных принципах. Мы не просто изобретаем — мы проверяем, оптимизируем и доводим до совершенства перед внедрением.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manifesto Page -->
+    <div id="manifesto" class="page">
+      <div class="manifesto-content">
+        <h1>Манифест</h1>
+        
+        <div class="manifesto-section">
+          <h3 class="manifesto-title">I. Мы — не стартап, не бизнес, не бренд.</h3>
+          <p class="manifesto-text">Мы — синтез дисциплин. Программисты, инженеры, механики, проектировщики, электрики, технари, киберфрики и мыслители. У нас нет границ между железом и кодом, между схемой и идеей. У нас есть только проект — и воля довести его до совершенства.</p>
+        </div>
+
+        <div class="manifesto-section">
+          <h3 class="manifesto-title">II. Мы строим не просто продукты.</h3>
+          <p class="manifesto-text">Мы создаём инфраструктуру нового мышления. Наши проекты — это не сервисы, а системы, не приложения, а движки будущего. Кто-то видит гараж — мы видим модульный завод. Кто-то пишет скрипт — мы проектируем сеть.</p>
+        </div>
+
+        <div class="manifesto-section">
+          <h3 class="manifesto-title">III. Наш стиль — инженерный максимализм.</h3>
+          <p class="manifesto-text">Мы не верим в "достаточно хорошо". Если ты прокладываешь кабель — он должен быть как у NASA. Если ты пишешь код — он должен быть как у JPL. Каждая деталь, каждый байт, каждый сварной шов — это заявление.</p>
+        </div>
+
+        <div class="manifesto-section">
+          <h3 class="manifesto-title">IV. Мы не верим в дипломы. Мы верим в результат.</h3>
+          <p class="manifesto-text">Здесь важен не статус, а компетенция. Не то, где ты учился — а что ты можешь построить с нуля, в одиночку, под давлением, без инструкций. Знания приходят и уходят. Инженерное чутьё — остаётся.</p>
+        </div>
+
+        <div class="manifesto-section">
+          <h3 class="manifesto-title">V. Мы здесь, чтобы построить.</h3>
+          <p class="manifesto-text">Не просто мечтать, не просто обсуждать. Брать идеи — и воплощать. На экране, в чертежах, на верстаке, на крыше дома, в полях, в космосе. Мы не просим позволения. Мы просто начинаем.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divisions Page -->
+    <div id="divisions" class="page">
+      <h1>Отделы</h1>
+      <p>Наши исследования и разработка организованы в специализированные отделы, каждый из которых раздвигает границы в своей области.</p>
+      
+      <div class="divisions-grid">
+        <div class="division-card">
+          <div class="division-icon">🤖</div>
+          <div class="division-title">ИИ Лаборатория</div>
+          <div class="division-desc">Продвинутый искусственный интеллект, нейронные сети и системы машинного обучения</div>
+        </div>
+        <div class="division-card">
+          <div class="division-icon">🧬</div>
+          <div class="division-title">НейроТех</div>
+          <div class="division-desc">Интерфейсы мозг-компьютер, нейроинженерия и биомедицинские устройства</div>
+        </div>
+        <div class="division-card">
+          <div class="division-icon">⚛️</div>
+          <div class="division-title">Квантум</div>
+          <div class="division-desc">Алгоритмы квантовых вычислений, симуляторы и экспериментальные исследования</div>
+        </div>
+        <div class="division-card">
+          <div class="division-icon">⚡</div>
+          <div class="division-title">Энергетика</div>
+          <div class="division-desc">Альтернативные энергетические решения, умные сети и управление энергией</div>
+        </div>
+        <div class="division-card">
+          <div class="division-icon">📡</div>
+          <div class="division-title">IoT и Устройства</div>
+          <div class="division-desc">Умные устройства, сенсорные сети и распределённые системы</div>
+        </div>
+        <div class="division-card">
+          <div class="division-icon">🚀</div>
+          <div class="division-title">Космический отдел</div>
+          <div class="division-desc">Автономные системы, CubeSat и аэрокосмическая инженерия</div>
+        </div>
+        <div class="division-card">
+          <div class="division-icon">🧪</div>
+          <div class="division-title">БиоТех</div>
+          <div class="division-desc">Биоинженерия, синтетическая биология и клеточные интерфейсы</div>
+        </div>
+        <div class="division-card">
+          <div class="division-icon">🔧</div>
+          <div class="division-title">Инфра и Инструменты</div>
+          <div class="division-desc">Фреймворки разработки, модульные платформы и инженерные инструменты</div>
+        </div>
+        <div class="division-card">
+          <div class="division-icon">🛴</div>
+          <div class="division-title">Лаборатория мобильности</div>
+          <div class="division-desc">Электротранспорт, умная транспортировка и мобильные платформы</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projects Page -->
+    <div id="projects" class="page">
+      <h1>Проекты</h1>
+      <p>Текущие исследования и разработки во всех наших отделах.</p>
+      
+      <div class="projects-container">
+        <div class="project-card">
+          <div class="project-status">Альфа</div>
+          <h3 class="project-title">ChronosMini</h3>
+          <p class="project-desc">Модульная система ИИ-памяти с графовой архитектурой и адаптивным контекстом для создания интеллектуальных ассистентов нового поколения.</p>
+        </div>
+        <div class="project-card">
+          <div class="project-status">MVP</div>
+          <h3 class="project-title">RavenCRM</h3>
+          <p class="project-desc">Минималистичная CRM-система для сервисного бизнеса с функциями учёта, аналитики и расчёта заработной платы. Без лишних наворотов.</p>
+        </div>
+        <div class="project-card">
+          <div class="project-status">Разработка</div>
+          <h3 class="project-title">RavenLab</h3>
+          <p class="project-desc">Web-интерфейс мастерской в стиле Iron Man. Полностью на Django с чистым фронтендом без фреймворков. Контроль всех проектов из одного места.</p>
+        </div>
+        <div class="project-card">
+          <div class="project-status">Активная</div>
+          <h3 class="project-title">Telegram автоматизация</h3>
+          <p class="project-desc">Коллекция ботов для автоматизации бизнеса: интеграция с Avito, магазин карт, ассистент, аналитик. Всё что нужно для цифрового бизнеса.</p>
+        </div>
+        <div class="project-card">
+          <div class="project-status">Исследования</div>
+          <h3 class="project-title">Нейроинтерфейс v0.1</h3>
+          <p class="project-desc">Прототип BCI системы на базе DIY ЭЭГ для создания интерфейсов управления мыслью. Первые шаги к кибернетическому будущему.</p>
+        </div>
+        <div class="project-card">
+          <div class="project-status">Прототип</div>
+          <h3 class="project-title">Умная мобильность</h3>
+          <p class="project-desc">Электровелосипед с телеметрией на ESP32, AI-ассистентом и GPS навигацией. Транспорт будущего уже сегодня.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline Page -->
+    <div id="timeline" class="page">
+      <h1>Планы</h1>
+      <p>Наша дорожная карта по строительству технологического будущего.</p>
+      
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-date">Q2 2025</div>
+          <div class="timeline-title">Фаза основания</div>
+          <div class="timeline-desc">Создание базовой инфраструктуры, MVP разработка RavenLab интерфейса и первых прототипов ИИ-ассистентов.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">Q3 2025</div>
+          <div class="timeline-title">Прототипирование и сборка</div>
+          <div class="timeline-desc">Продвинутая фильтрация сигналов, телеметрические системы и платформы мобильности первого поколения с интеграцией ESP32.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">Q4 2025</div>
+          <div class="timeline-title">Интеграция и MVP</div>
+          <div class="timeline-desc">Запуск GraphMemory v1, BCI v0.2 с возможностями управления UI и разработка API-шины для интеграции модулей.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">Q1 2026</div>
+          <div class="timeline-title">Масштабирование и новые рубежи</div>
+          <div class="timeline-desc">Автономные энергетические станции, разработка биосенсоров, прототипирование CubeSat и расширение облачной инфраструктуры.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">Q2-Q4 2026</div>
+          <div class="timeline-title">Экосистема и пилоты</div>
+          <div class="timeline-desc">Полная модуляризация экосистемы, запуск инкубатора Raven Ventures и полевые испытания в экстремальных условиях.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Page -->
+    <div id="contact" class="page">
+      <h1>Контакты</h1>
+      <p>Свяжитесь с Raven Industries для сотрудничества, партнёрства или возможностей трудоустройства.</p>
+      
+      <div class="contact-grid">
+        <div class="contact-info">
+          <h3>Связаться с нами</h3>
+          <div class="contact-item">
+            <div class="contact-icon">📧</div>
+            <div>
+              <div>Email</div>
+              <a href="mailto:contact@ravenindustries.io" class="contact-link">contact@ravenindustries.io</a>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">💬</div>
+            <div>
+              <div>Telegram</div>
+              <a href="https://t.me/raven_industries" target="_blank" class="contact-link">@raven_industries</a>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">🔗</div>
+            <div>
+              <div>GitHub</div>
+              <a href="#" class="contact-link">github.com/raven-industries</a>
+            </div>
+          </div>
+        </div>
+        <div class="contact-info">
+          <h3>Присоединиться к Raven</h3>
+          <p style="color: var(--text-dim); line-height: 1.6; margin-bottom: 2rem;">
+            Мы ищем инженеров, исследователей и визионеров, которые разделяют нашу приверженность к раздвижению технологических границ. 
+            Если ты можешь строить, изобретать и мыслить за пределами обычного, мы хотим тебя услышать.
+          </p>
+          <div class="contact-item">
+            <div class="contact-icon">🎯</div>
+            <div>
+              <div>Открытые позиции</div>
+              <div style="color: var(--text-dim); font-size: 0.9rem;">ИИ-инженеры, Железячники, Учёные-исследователи</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📍</div>
+            <div>
+              <div>Локация</div>
+              <div style="color: var(--text-dim); font-size: 0.9rem;">Удалённо-первое, Глобальное сотрудничество</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-status">[Доступ разрешён] Добро пожаловать, оперативник Raven</div>
+    <button class="theme-toggle" onclick="toggleTheme()">Тема</button>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    // Navigation functionality
+    function navigate(page) {
+      // Remove active class from all nav items and pages
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+      
+      // Add active class to current nav item and page
+      event.target.classList.add('active');
+      document.getElementById(page).classList.add('active');
+      
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Create floating particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 30;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDuration = (Math.random() * 25 + 15) + 's';
+        particle.style.animationDelay = Math.random() * 25 + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Theme toggle functionality
+    function toggleTheme() {
+      const body = document.body;
+      const currentTheme = body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      body.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Load saved theme
+    function loadTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.body.setAttribute('data-theme', savedTheme);
+    }
+
+    // Enhanced navigation with keyboard support
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        navigate('home');
+      }
+      
+      // Quick navigation with number keys
+      const pages = ['home', 'manifesto', 'divisions', 'projects', 'timeline', 'contact'];
+      const keyNum = parseInt(e.key);
+      if (keyNum >= 1 && keyNum <= 6) {
+        navigate(pages[keyNum - 1]);
+      }
+    });
+
+    // Smooth scrolling for internal links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Add intersection observer for animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -30px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Initialize everything when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+      loadTheme();
+      createParticles();
+      
+      // Add fade-in animation to cards
+      document.querySelectorAll('.card, .division-card, .project-card, .timeline-item').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(card);
+      });
+
+      // Add glitch effect to hero title on load
+      setTimeout(() => {
+        const heroTitle = document.querySelector('.hero-title');
+        if (heroTitle) {
+          heroTitle.style.animation = 'glitch1 0.5s ease-in-out';
+        }
+      }, 1000);
+    });
+
+    // Add subtle mouse parallax effect for particles
+    document.addEventListener('mousemove', function(e) {
+      const mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+      const mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+      
+      document.querySelectorAll('.particle').forEach((particle, index) => {
+        const speed = (index % 3 + 1) * 0.3;
+        const x = mouseX * speed;
+        const y = mouseY * speed;
+        particle.style.transform = `translate(${x}px, ${y}px)`;
+      });
+    });
+
+    // Add loading animation
+    window.addEventListener('load', function() {
+      document.body.style.opacity = '0';
+      document.body.style.transition = 'opacity 0.3s ease';
+      
+      setTimeout(() => {
+        document.body.style.opacity = '1';
+      }, 50);
+    });
+
+    // Easter egg: Konami code for theme inversion
+    let konamiCode = [];
+    const konami = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+    
+    document.addEventListener('keydown', function(e) {
+      konamiCode.push(e.keyCode);
+      
+      if (konamiCode.length > konami.length) {
+        konamiCode.shift();
+      }
+      
+      if (JSON.stringify(konamiCode) === JSON.stringify(konami)) {
+        document.body.style.filter = 'invert(1)';
+        setTimeout(() => {
+          document.body.style.filter = 'none';
+        }, 2000);
+        konamiCode = [];
+      }
+    });
+
+    // Add simple performance monitoring
+    window.addEventListener('load', function() {
+      if ('performance' in window) {
+        setTimeout(() => {
+          const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+          console.log('Время загрузки страницы:', loadTime, 'мс');
+        }, 0);
+      }
+    });
+
+    // Progressive enhancement for older browsers
+    if (!window.CSS || !CSS.supports('backdrop-filter', 'blur(10px)')) {
+      const header = document.querySelector('.header');
+      if (header) {
+        header.style.background = 'var(--bg)';
+      }
+    }
+
+    // Add click sound simulation (visual feedback)
+    document.addEventListener('click', function(e) {
+      if (e.target.matches('.btn, .nav-item, .card, .division-card, .project-card')) {
+        e.target.style.transform = 'scale(0.98)';
+        setTimeout(() => {
+          e.target.style.transform = '';
+        }, 100);
+      }
+    });
+  </script>
 </body>
 </html>
