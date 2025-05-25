@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raven Industries</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Навигационная панель -->
+    <nav class="sidebar">
+      <div class="logo-container">
+        <div class="logo-circle">
+          <div class="logo-dot"></div>
+        </div>
+        <h1 class="logo-text">RAVEN INDUSTRIES</h1>
+      </div>
+      <div class="nav-links">
+        <button onclick="navigate('home')">HOME</button>
+        <button onclick="navigate('manifesto')">MANIFESTO</button>
+        <button onclick="navigate('divisions')">DIVISIONS</button>
+        <button onclick="navigate('projects')">PROJECTS</button>
+        <button onclick="navigate('contact')">CONTACT</button>
+      </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <main id="content" class="fade-in">
+      <h2>HOME</h2>
+      <p>Загрузка данных из Raven Archives...</p>
+    </main>
+  </div>
+
+  <!-- Нижний футер -->
+  <footer>
+    <span>[Access Granted] Welcome, Operative Raven</span>
+    <button id="theme-toggle">🌓</button>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
